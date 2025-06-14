@@ -8,6 +8,7 @@ A lightweight Streamlit application with user authentication, permission-based a
 - 👑 **Admin Panel** - User management and permissions
 - 📅 **Interactive Calendar** - Full calendar with ICS export
 - 🎨 **Image Generator** - Basic image creation and editing
+- 🤖 **AI Calendar Extraction** - Azure AI-powered event extraction from images
 - 🛡️ **Permission System** - Role-based page access
 - 💾 **Lightweight Database** - DuckDB for zero-cost storage
 
@@ -21,7 +22,12 @@ my-streamlit-app
 ├── pages/
 │   ├── calendar.py       # Interactive calendar with events
 │   ├── image_generator.py # Image creation tools
-│   └── admin.py          # Admin user management
+│   └── admin.py          # Admin user management + AI calendar extraction
+├── utils/
+│   ├── azure_ai.py       # Azure AI Vision integration
+│   ├── calendar_db.py    # Calendar events database
+│   ├── db_auth.py        # User authentication
+│   └── login.py          # Login utilities
 ├── requirements.txt      # Python dependencies
 ├── users.db             # DuckDB database (auto-created, gitignored)
 └── README.md
@@ -122,6 +128,50 @@ export USER_DB_PATH="/mnt/data/users.db"
 |----------|-------------|---------|
 | `USER_DB_PATH` | Path to DuckDB database file | `users.db` |
 | `STREAMLIT_SERVER_PORT` | Port for Streamlit server | `8501` |
+| `ADMIN_PASSWORD` | Admin user password | Required on first run |
+| `AZURE_AI_VISION_ENDPOINT` | Azure AI Vision service endpoint | Optional |
+| `AZURE_AI_VISION_KEY` | Azure AI Vision API key | Optional (use managed identity in production) |
+
+### Azure AI Vision Setup (Optional)
+
+To enable AI-powered calendar event extraction from images:
+
+1. **Create Azure AI Vision Resource:**
+   ```bash
+   # Using Azure CLI
+   az cognitiveservices account create \
+     --name my-vision-service \
+     --resource-group my-rg \
+     --kind ComputerVision \
+     --sku F0 \
+     --location eastus
+   ```
+
+2. **Get Endpoint and Key:**
+   ```bash
+   # Get endpoint
+   az cognitiveservices account show \
+     --name my-vision-service \
+     --resource-group my-rg \
+     --query "properties.endpoint" --output tsv
+   
+   # Get key
+   az cognitiveservices account keys list \
+     --name my-vision-service \
+     --resource-group my-rg \
+     --query "key1" --output tsv
+   ```
+
+3. **Configure Environment:**
+   ```bash
+   export AZURE_AI_VISION_ENDPOINT="https://your-resource.cognitiveservices.azure.com/"
+   export AZURE_AI_VISION_KEY="your-api-key"
+   ```
+
+4. **For Production (Recommended - Managed Identity):**
+   - Deploy to Azure with managed identity enabled
+   - Grant the managed identity **Cognitive Services User** role
+   - Set only `AZURE_AI_VISION_ENDPOINT` (no key needed)
 
 ### Database Management
 

@@ -1,8 +1,13 @@
 import streamlit as st
+from dotenv import load_dotenv
 from utils.login import authenticate_user, check_permission, logout, is_admin
 from pages.calendar import calendar_page
 from pages.image_generator import image_generator_page
 from pages.admin import admin_page
+from pages.calendar_events import calendar_events_page
+
+# Load environment variables from .env file
+load_dotenv()
 
 def main():
     st.set_page_config(
@@ -39,6 +44,7 @@ def main():
             available_pages.append("Image Generator")
         if is_admin():
             available_pages.append("Admin Panel")
+            available_pages.append("Calendar Events")
         
         if available_pages:
             page = st.radio("Go to", available_pages)
@@ -57,6 +63,8 @@ def main():
         image_generator_page()
     elif page == "Admin Panel":
         admin_page()
+    elif page == "Calendar Events":
+        calendar_events_page()
     elif not available_pages:
         st.error("You don't have permission to access any pages. Please contact an administrator.")
 
