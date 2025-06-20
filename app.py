@@ -1,10 +1,10 @@
 import streamlit as st
 from dotenv import load_dotenv
 from utils.login import authenticate_user, check_permission, logout, is_admin
-from pages.calendar import calendar_page
-from pages.image_generator import image_generator_page
-from pages.admin import admin_page
-from pages.calendar_events import calendar_events_page
+from page_modules.calendar import calendar_page
+from page_modules.image_generator import image_generator_page
+from page_modules.admin import admin_page
+from page_modules.calendar_events import calendar_events_page
 
 # Load environment variables from .env file
 load_dotenv()
@@ -16,6 +16,11 @@ def main():
         layout="wide",
         initial_sidebar_state="collapsed"
     )
+    
+    # Force single entry point - ensure this is the only way to access the app
+    if __name__ != "__main__":
+        st.error("🔒 Unauthorized access. Please run the application through the main entry point.")
+        st.stop()
     
     # Initialize session state
     if 'username' not in st.session_state:

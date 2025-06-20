@@ -1,7 +1,7 @@
 import streamlit as st
 import pandas as pd
 from utils.db_auth import get_user_db
-from utils.login import is_admin
+from utils.login import is_admin, require_auth
 from utils.azure_ai import get_azure_openai_extractor, validate_azure_openai_configuration
 from utils.calendar_db import get_calendar_db
 from PIL import Image
@@ -9,6 +9,7 @@ import io
 
 def calendar_events_page():
     """Calendar Events management page with AI-powered image extraction"""
+    require_auth()
     if not is_admin():
         st.error("🚫 Access denied. Admin privileges required.")
         return

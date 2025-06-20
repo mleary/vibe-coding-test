@@ -1,10 +1,11 @@
 import streamlit as st
 import pandas as pd
 from utils.db_auth import get_user_db
-from utils.login import is_admin
+from utils.login import is_admin, require_auth
 
 def admin_page():
     """Admin page for user management"""
+    require_auth()
     if not is_admin():
         st.error("🚫 Access denied. Admin privileges required.")
         return

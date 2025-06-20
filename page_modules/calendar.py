@@ -2,6 +2,7 @@ import streamlit as st
 from streamlit_calendar import calendar
 from datetime import datetime, timedelta, date
 import io
+from utils.login import require_auth, check_permission
 
 def generate_dummy_events():
     """Generate some dummy events for the calendar"""
@@ -75,6 +76,13 @@ END:VEVENT
     return ics_content
 
 def calendar_page():
+    # Check authentication and permissions
+    require_auth()
+    if not check_permission("calendar"):
+        st.error("🚫 You don't have permission to access the Calendar.")
+        st.info("Please contact an administrator to request access.")
+        return
+    
     st.title("📅 Calendar")
     
     # Generate dummy events

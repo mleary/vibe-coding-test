@@ -1,8 +1,16 @@
 import streamlit as st
 from PIL import Image, ImageDraw, ImageFont
 import io
+from utils.login import require_auth, check_permission
 
 def image_generator_page():
+    # Check authentication and permissions
+    require_auth()
+    if not check_permission("image_generator"):
+        st.error("🚫 You don't have permission to access the Image Generator.")
+        st.info("Please contact an administrator to request access.")
+        return
+    
     st.title("🎨 Image Generator")
     st.write("Welcome to the Image Generator feature!")
     

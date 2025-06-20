@@ -77,3 +77,11 @@ def logout():
 def is_admin():
     """Check if current user is admin"""
     return st.session_state.get("username") == "admin"
+
+def require_auth():
+    """Redirect to login if user is not authenticated"""
+    if 'username' not in st.session_state or st.session_state.username is None:
+        st.error("🔒 You must be logged in to access this page.")
+        st.info("Please use the main app to log in.")
+        st.stop()
+    return True
